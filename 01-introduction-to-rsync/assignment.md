@@ -16,6 +16,8 @@ tabs:
 difficulty: ""
 enhanced_loading: null
 ---
+![rsync logo](../assets/rsync-logo.png)
+
 [Rsync](https://rsync.samba.org/) is an open source utility that provides
 fast incremental file transfer. Rsync is efficient because you can have it
 transfer only the files which do not exist, or have changed, rather than
