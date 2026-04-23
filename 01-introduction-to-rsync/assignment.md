@@ -1,21 +1,23 @@
 ---
 slug: introduction-to-rsync
-id: 5wx0pvdzlknq
+id: vdayhzeecbas
 type: challenge
 title: Introduction to rsync
 tabs:
-- id: ogmgq3jib1gp
+- id: nh6doufw1g6c
   title: Workstation
   type: terminal
   hostname: workstation
   cmd: sudo -i -u iggy
-- id: evf33fq85cbu
+- id: cjzhjaxbowfd
   title: rsync man page
   type: browser
   hostname: rsync-docs
 difficulty: ""
 enhanced_loading: null
 ---
+![rsync logo](../assets/rsync-logo.png)
+
 [Rsync](https://rsync.samba.org/) is an open source utility that provides
 fast incremental file transfer. Rsync is efficient because you can have it
 transfer only the files which do not exist, or have changed, rather than
@@ -34,7 +36,7 @@ We're going to run this command. Don't worry about what the options mean for
 now, let's just get the files locally so we can work with them.
 
 ```bash,run
-rsync -av --progress --stats fileserver:/opt/data/vosp_1000/ vosp_1000/
+rsync -av --progress --stats fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
 You can either click on the "copy" link in the upper right corner of the

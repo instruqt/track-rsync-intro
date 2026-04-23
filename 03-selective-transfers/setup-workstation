@@ -2,6 +2,9 @@
 
 set -euxo pipefail
 
+# shellcheck source=/dev/null
+source /home/iggy/.env
+
 # The previous challenge cleanup script removed /home/iggy/vosp_1000/
 # so we don't need to do anything here
 

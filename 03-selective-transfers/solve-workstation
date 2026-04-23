@@ -2,14 +2,18 @@
 
 set -euxo pipefail
 
+# shellcheck source=/dev/null
+source /home/iggy/.env
+
 pushd /home/iggy
+
 # We run *every* command we tell iggy to run
 
-sudo -u iggy rsync -av --stats --include '*.lbl' fileserver:/opt/data/vosp_1000/ vosp_1000/
-sudo -u iggy rm -rf vosp_1000/
-sudo -u iggy rsync -av --stats --exclude '*' fileserver:/opt/data/vosp_1000/ vosp_1000/
-sudo -u iggy rsync -av --stats --exclude '*' --include '*.lbl' fileserver:/opt/data/vosp_1000/ vosp_1000/
-sudo -u iggy rsync -av --stats --include '*.lbl' --exclude '*' fileserver:/opt/data/vosp_1000/ vosp_1000/
-sudo -u iggy rsync -av --stats --include '*.lbl' --include '*/' --exclude '*' fileserver:/opt/data/vosp_1000/ vosp_1000/
+sudo -u iggy rsync -av --stats --include '*.lbl' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+sudo -u iggy rm -rf "${WORKSTATION_DST_DIR}"
+sudo -u iggy rsync -av --stats --exclude '*' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+sudo -u iggy rsync -av --stats --exclude '*' --include '*.lbl' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+sudo -u iggy rsync -av --stats --include '*.lbl' --exclude '*' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+sudo -u iggy rsync -av --stats --include '*.lbl' --include '*/' --exclude '*' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
 
 popd

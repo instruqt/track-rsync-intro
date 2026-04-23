@@ -2,11 +2,13 @@
 
 set -euxo pipefail
 
+# shellcheck source=/dev/null
+source /home/iggy/.env 
 
 # Is there even the expected target directory?
 
-if [ ! -d /home/iggy/vosp_1000 ]; then
-    fail-message "The 'vosp_1000' directory doesn't exist. Did you run the 'rsync' command?"
+if [ ! -d "/home/iggy/${WORKSTATION_DST_DIR}" ]; then
+    fail-message "The '${WORKSTATION_DST_DIR}' directory doesn't exist. Did you run the 'rsync' command?"
     exit 1
 fi
 
@@ -17,7 +19,7 @@ TESTDIR=$(mktemp -d)
 chown iggy:iggy "${TESTDIR}"
 
 pushd "${TESTDIR}"
-sudo -u iggy rsync -av --progress --stats fileserver:/opt/data/vosp_1000/ vosp_1000/
+sudo -u iggy rsync -av --progress --stats "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
 
 # Now use three rsync options to verify that the directories are identical
 #   --dry-run         - don't actually do anything which would touch a file, but-
@@ -36,8 +38,8 @@ sudo -u iggy rsync -a \
     --dry-run \
     --itemize-changes \
     --delete \
-    /home/iggy/vosp_1000/ \
-    vosp_1000/ > "${ITEMIZED}"
+    "/home/iggy/${WORKSTATION_DST_DIR}" \
+    "${WORKSTATION_DST_DIR}" > "${ITEMIZED}"
 
 if [ -s "${ITEMIZED}" ]; then
     fail-message "That doesn't quite look right, did you run the rsync command with the correct options?"

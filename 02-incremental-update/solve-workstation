@@ -2,6 +2,9 @@
 
 set -euxo pipefail
 
+# shellcheck source=/dev/null
+source /home/iggy/.env
+
 pushd /home/iggy
-sudo -u iggy rsync -av --progress --stats fileserver:/opt/data/vosp_1000/ vosp_1000/
+sudo -u iggy rsync -av --progress --stats "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
 popd
