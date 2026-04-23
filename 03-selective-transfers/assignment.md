@@ -1,15 +1,15 @@
 ---
 slug: selective-transfers
-id: qxwsippxz3rd
+id: fngy8ox8vrt9
 type: challenge
 title: Selective Transfers
 tabs:
-- id: 2myptoiduzkv
+- id: 3pvocvlycdxo
   title: Workstation
   type: terminal
   hostname: workstation
   cmd: sudo -i -u iggy
-- id: jqdjliagjfii
+- id: cobkrmio1yfh
   title: rsync man page
   type: browser
   hostname: rsync-docs
@@ -51,7 +51,7 @@ which files to include. Let's see what happens if we run `rsync` with only
 the `--exclude` option in the [Workstation](tab-0) tab:
 
 ```bash,run
-rm -rf vosp_1000/
+rm -rf [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 rsync -av --stats --exclude '*' fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 

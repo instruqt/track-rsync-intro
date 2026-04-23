@@ -1,15 +1,15 @@
 ---
 slug: incremental-update
-id: ml88czl5x6oc
+id: 9wn3r6gnzymw
 type: challenge
 title: Incremental Update
 tabs:
-- id: hbdmdbftfmir
+- id: fflodllylanv
   title: Workstation
   type: terminal
   hostname: workstation
   cmd: sudo -i -u iggy
-- id: pj7w7zhdfcqi
+- id: hxofjj0dgyhy
   title: rsync man page
   type: browser
   hostname: rsync-docs
@@ -26,7 +26,7 @@ is at the source and the destination, and determine what actions it
 needs to do.
 
 To demonstate that, we have removed every file ending in `.cat` from
-anywhere under the `vosp_1000` directory. If you were to fix this manually,
+anywhere under the `[[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]` directory. If you were to fix this manually,
 you would have to find every file ending in `.cat` on the fileserver
 and transfer it manually. However, you know that `rsync` can fix this for
 you automatically.
