@@ -134,7 +134,7 @@ way to finish the track. In our example track, we have three challenges,
 an introduction to rsync, a demonstration of incremental updates, and
 selective transfers. We will talk about challenge lifecycle scripts later
 on, for now, the key component in each challenge is the `assignment.md` file.
-We will walk through this file for [Challenge 02 - Incremental Update](/02-incremental-update/assignemnt.md).
+We will walk through this file for [Challenge 02 - Incremental Update](/02-incremental-update/assignment.md).
 
 ### Challenge Metadata
 
@@ -145,5 +145,187 @@ in this challenge:
 1. The `title` is the displayed title of this challenge
 2. The `slug` is the URL fragment which references this particular challenge.
 3. The `tabs` section defines the [tabs](https://docs.instruqt.com/tracks/challenges/challenge-tabs) which are visible in this challenge. A tab can point at a website, a service running on a VM or container within this track instance sandbox, a simple code editor, a terminal, or a virtual browser. In this particular challenge, we have one tab to a terminal on the `workstation host`, and another to a virtual browser to display the rsync documentation webpage.
+
+### Challenge Assignment
+
+The remainder of the `assignment.md` file, after the second `---`, is the *assignment*,
+the instructions presented to the learner as they go through this challenge. This is
+in Markdown, which you can edit by hand or use the built-in [Markdown editor](https://docs.instruqt.com/tracks/challenges/using-markdown-editor).
+
+### Assets
+
+Note that the first item in the challenge 02 assignment text is
+`![rsync logo](../assets/rsync-logo.png)`. This is a normal Markdown
+reference to show an image or video, which leverages the Instruqt
+platform support for [assets](https://docs.instruqt.com/reference/cli/assets#insert-assets).
+Any image or video placed in the `assets/` directory in your track
+and referenced like this example will be automatically uploaded and
+rendered in your track.
+
+### Runtime variables
+
+Note also that rather than hardcoding the directory paths the
+learner is supposed to reference, you see the following:
+
+```
+[[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
+```
+
+These are [runtime variables](https://docs.instruqt.com/sandboxes/runtime/runtime-variables),
+which allow you to set variables in your sandbox hosts, and leverage them
+in your assignment text. As you'll see later when we cover lifecycle scripts,
+we set the runtime variables `WORKSTATION_DST_DIR` and `FILESERVER_SRC_DIR`.
+Here we do it for ease of updating the track if we decide to change the
+source and destination directories, but you can use these for any
+dynamic content you may have in your track. For example, you may provision
+temporary credentials in a lifecycle script, if you set them as a runtime
+variable you can surface those to your learner in a challenge assignment.
+
+## Lifecycle Scripts
+
+The third component of an Instruqt track are [lifecycle scripts](https://docs.instruqt.com/sandboxes/lifecycle-scripts/scripting-overview).
+These are scripts which run at certain well defined points of a
+track's lifecycle, and are divided into two categories: track-level
+scripts and challenge-level scripts.
+
+These scripts run behind the scenes, invisible to your learner,
+and can be leveraged by you to do things which have to happen
+per instance of a running track. These tend to be shell scripts,
+although on Linux sandbox hosts and containers they can be scripting
+language which is installed in the sandbox (for example, Python or
+Ruby), on Windows VM PowerShell is supported.
+
+### Track Setup and Cleanup
+
+Track-level scripts are placed in the `track_scripts/` directory
+at the top level of your track. They can run at track setup, when
+a sandbox is created, and at track cleanup, when the sandbox is
+deprovisioned. Each sandbox host can have it's own script, setup scripts
+are named `setup-<host name>`, and cleanup scripts are named
+`cleanup-<host name>`. In our track, we do not have any track cleanup
+scripts, only setup scripts, but both of our sandbox hosts have
+setup scripts.
+
+Since our hosts are called `fileserver` and `workstation`, our
+setup scripts are `setup-fileserver` and `setup-workstation`, respectively.
+
+In our example track here, we mostly use the track setup scripts
+to install an SSH key for our test user `iggy`, but you could use
+these scripts to do any setup or cleanup which has to be done when
+the track sandbox is running. For tracks which use cloud accounts,
+this tends to be where resources are provisioned within those
+accounts; since each track gets its own ephemeral cloud account,
+that setup cannot happen until the sandbox is created.
+
+While we do not have any `cleanup` scripts here, these tend to be
+used for cleanup of any external ephemeral resources. For example,
+if you create a temporary account on a SaaS platform for use in
+a track, you can clean it up and keep things tidy in a track cleanup
+script.
+
+Our `setup-workstation` script also leverages two Instruqt features,
+secrets, and runtime variables.
+
+### Secrets
+
+We covered how you add [secrets](https://docs.instruqt.com/sandboxes/runtime/secrets)
+to a track above when we looked at the track `config.yml`. The
+`setup-workstation` script shows how you use them within a lifecycle
+script: they show up as environment variables. So, when we added this
+section to our `config.yml`:
+
+```
+secrets:
+- name: IGGYS_SSH_PRIVATE_KEY_BASE64
+```
+
+we make available an environment variable which we use in the
+`setup-workstation` script on this line:
+
+```
+echo "${IGGYS_SSH_PRIVATE_KEY_BASE64}" | base64 -d > id_ed25519
+```
+
+Note that *only* secrets configured in your `config.yml` are available
+to your track, you may have several secrets configured in your Instruqt
+team but only the ones you ask for will be exposed to your lifecycle
+scripts.
+
+Note also that these values are available *only* in the lifecycle
+scripts. They are not available to the learner, even if there have
+a terminal on a given sandbox host.
+
+### Runtime Variables
+
+We previously talked about using [Runtime variables](https://docs.instruqt.com/sandboxes/runtime/runtime-variables)
+in the Challenge Assignment section, but did not cover how to set
+them.
+
+```
+agent variable set FILESERVER_SRC_DIR "${FILESERVER_SRC_DIR}"
+agent variable set WORKSTATION_DST_DIR "${WORKSTATION_DST_DIR}"
+```
+
+This section of the `setup-workstation` track lifecycle script
+is how we set those runtime variables. As mentioned above, we
+can use runtime variables in challenge assignments to have dynamic
+assignment content. It is also possible to use runtime variables
+within other lifecycle scripts after they are set, **as long as
+you are on the same sandbox host**. For example, in a later
+lifecycle script which runs on the `workstation` host you could run
+the command `agent variable get FILESERVER_SRC_DIR` to retrieve
+the value set above.
+
+### Challenge Scripts
+
+In addition to track lifecycle scripts, each challenge has its own
+lifecycle scripts, which again can run on any (or multiple) sandbox
+hosts.
+
+A challenge **setup** script runs when the learner starts a challenge,
+and they are called `setup-<host name>`. Looking again at this track's
+second challenge, the `setup-workstation` script runs on the `workstation`
+host, and does setup specific to this challenge. In our case, we want
+to set up a scenario where certain files are removed and we want to
+restore them, our setup script copies all of the files and then deletes
+the ones we want, to set up the challenge for the user.
+
+A challenge **check** script runs when the learner clicks on the "Check"
+button in an assignment, and they are called `check-<host name>`. A
+check script allows you to give your learner feedback by allowing you to
+verify that they completed the steps necessary to successfully complete
+this challenge. If the return code of the script is 0, the check successfully
+completed and the learner can move on, any other return code indicates
+an error. You can use the [fail-message](https://docs.instruqt.com/sandboxes/lifecycle-scripts/helper-scripts#fail-message)
+helper script to return feedback to the user.
+
+A challenge **solve** script has two uses. First, you can [enable skipping](https://docs.instruqt.com/tracks/challenges/skipping-challenges)
+within challenges, which can be useful if a learner is stuck on a particular
+challenge, or if they return to a previously partially completed track and
+want to return to where they left off.
+
+Second, they can be used for [track testing](https://docs.instruqt.com/tracks/challenges/skipping-challenges),
+by allowing you to simulate a learner's actions when using the `instruqt track test`
+command.
+
+These scripts are called `solve-<host name>`; in this particular challenge
+we have a `solve-workstation` script. The [challenge 03 solve script](/03-selective-transfers/solve-workstation)
+is a particularly good example:
+
+```
+# We run *every* command we tell iggy to run
+
+sudo -u iggy rsync -av --stats --include '*.lbl' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+sudo -u iggy rm -rf "${WORKSTATION_DST_DIR}"
+sudo -u iggy rsync -av --stats --exclude '*' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+sudo -u iggy rsync -av --stats --exclude '*' --include '*.lbl' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+sudo -u iggy rsync -av --stats --include '*.lbl' --exclude '*' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+sudo -u iggy rsync -av --stats --include '*.lbl' --include '*/' --exclude '*' "fileserver:${FILESERVER_SRC_DIR}" "${WORKSTATION_DST_DIR}"
+```
+
+A challenge **cleanup** script runs at the end of each challenge,
+and can be used to cleanup any actions performed during that challenge
+if necessary before moving to the next challenge. These scripts are
+called `cleanup-<host name>`.
 
 
