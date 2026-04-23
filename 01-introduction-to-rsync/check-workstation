@@ -39,7 +39,7 @@ sudo -u iggy rsync -a \
     --itemize-changes \
     --delete \
     "/home/iggy/${WORKSTATION_DST_DIR}" \
-    "{WORKSTATION_DST_DIR}" > "${ITEMIZED}"
+    "${WORKSTATION_DST_DIR}" > "${ITEMIZED}"
 
 if [ -s "${ITEMIZED}" ]; then
     fail-message "That doesn't quite look right, did you run the rsync command with the correct options?"
