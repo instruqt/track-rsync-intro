@@ -36,7 +36,7 @@ We're going to run this command. Don't worry about what the options mean for
 now, let's just get the files locally so we can work with them.
 
 ```bash,run
-rsync -av --progress --stats fileserver:/opt/data/vosp_1000/ vosp_1000/
+rsync -av --progress --stats fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
 You can either click on the "copy" link in the upper right corner of the

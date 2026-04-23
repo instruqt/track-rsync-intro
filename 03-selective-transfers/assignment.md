@@ -16,6 +16,7 @@ tabs:
 difficulty: ""
 enhanced_loading: null
 ---
+![rsync logo](../assets/rsync-logo.png)
 
 You can also tell `rsync` to only transfer certain files. But how it does
 it is a bit unusual, so we're going to work through a few examples. Let's
@@ -28,7 +29,7 @@ might think the correct way to do this is to run the following in the
 [Workstation](tab-0) tab:
 
 ```bash,run
-rsync -av --stats --include '*.lbl' fileserver:/opt/data/vosp_1000/ vosp_1000/
+rsync -av --stats --include '*.lbl' fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
 But you can see all kinds of files transferred, and if you look at the
@@ -51,7 +52,7 @@ the `--exclude` option in the [Workstation](tab-0) tab:
 
 ```bash,run
 rm -rf vosp_1000/
-rsync -av --stats --exclude '*' fileserver:/opt/data/vosp_1000/ vosp_1000/
+rsync -av --stats --exclude '*' fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
 Here you can see that it only created your destination directory, but did
@@ -60,7 +61,7 @@ to add an `--include` option to include just the `.lbl` files, correct?
 Let's try that in the [Workstation](tab-0) tab:
 
 ```bash,run
-rsync -av --stats --exclude '*' --include '*.lbl' fileserver:/opt/data/vosp_1000/ vosp_1000/
+rsync -av --stats --exclude '*' --include '*.lbl' fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
 But wait, why did it still not linclude any `.lbl` files? That's because
@@ -74,7 +75,7 @@ So the order of your `--include` and `--exclude` options matters. Let's
 try this in the [Workstation](tab-0) tab:
 
 ```bash,run
-rsync -av --stats --include '*.lbl' --exclude '*' fileserver:/opt/data/vosp_1000/ vosp_1000/
+rsync -av --stats --include '*.lbl' --exclude '*' fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
 You'll see that it transferred one file, `aareadme.lbl`. But you know there
@@ -86,7 +87,7 @@ the top level of the source directory. But we can do the following in the
 [Workstation](tab-0) tab:
 
 ```bash,run
-rsync -av --stats --include '*.lbl' --include '*/' --exclude '*' fileserver:/opt/data/vosp_1000/ vosp_1000/
+rsync -av --stats --include '*.lbl' --include '*/' --exclude '*' fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
 By adding the `--include '*/'` command-line option, you've told

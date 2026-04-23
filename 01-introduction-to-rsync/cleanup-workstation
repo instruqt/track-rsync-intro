@@ -2,6 +2,9 @@
 
 set -euxo pipefail
 
+# shellcheck source=/dev/null
+source /home/iggy/.env
+
 # Clean this directory up in preparation for the next challenge
 
-rm -rf /home/iggy/vosp_1000/
+rm -rf "/home/iggy/${WORKSTATION_DST_DIR}"

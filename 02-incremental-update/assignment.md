@@ -16,6 +16,8 @@ tabs:
 difficulty: ""
 enhanced_loading: null
 ---
+![rsync logo](../assets/rsync-logo.png)
+
 # Incremental Updates
 
 One of the features of `rsync` is effecient, incremental file transfer.
@@ -32,7 +34,7 @@ you automatically.
 Run the following command in the [workstation](tab-0) terminal:
 
 ```bash,run
-rsync -av --stats fileserver:/opt/data/vosp_1000/ vosp_1000/
+rsync -av --stats fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
 Notice that the list of files you see on the screen is short, and the
