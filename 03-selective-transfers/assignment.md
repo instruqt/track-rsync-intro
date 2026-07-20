@@ -1,15 +1,21 @@
 ---
 slug: selective-transfers
-id: fngy8ox8vrt9
+id: f1uj6vteclb8
 type: challenge
 title: Selective Transfers
+notes:
+- type: text
+  contents: |-
+    # Selective Transfers
+
+    Rsync allows you to transfer certain files, through the use of `--include` and `--exclude` options --- but the syntax can be a little confusing
 tabs:
-- id: 3pvocvlycdxo
+- id: xa7ciebs1ehy
   title: Workstation
   type: terminal
   hostname: workstation
   cmd: sudo -i -u iggy
-- id: cobkrmio1yfh
+- id: bahnqdiahlpc
   title: rsync man page
   type: browser
   hostname: rsync-docs
@@ -64,7 +70,7 @@ Let's try that in the [Workstation](tab-0) tab:
 rsync -av --stats --exclude '*' --include '*.lbl' fileserver:[[ Instruqt-Var key="FILESERVER_SRC_DIR" hostname="workstation" ]] [[ Instruqt-Var key="WORKSTATION_DST_DIR" hostname="workstation" ]]
 ```
 
-But wait, why did it still not linclude any `.lbl` files? That's because
+But wait, why did it still not include any `.lbl` files? That's because
 the `--exclude` and `--include` options add *rules* to the list of files
 and directories that `rsync` considers for transfer, and **the first rule
 to match wins**. So in our example, `--exclude '*'` is the first rule on

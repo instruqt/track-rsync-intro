@@ -1,15 +1,15 @@
 ---
 slug: incremental-update
-id: 9wn3r6gnzymw
+id: exaithil822o
 type: challenge
 title: Incremental Update
 tabs:
-- id: fflodllylanv
+- id: vwxygutp1ykv
   title: Workstation
   type: terminal
   hostname: workstation
   cmd: sudo -i -u iggy
-- id: hxofjj0dgyhy
+- id: 4vmpryjsqucb
   title: rsync man page
   type: browser
   hostname: rsync-docs

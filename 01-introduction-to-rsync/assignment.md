@@ -1,15 +1,23 @@
 ---
 slug: introduction-to-rsync
-id: vdayhzeecbas
+id: au8nsdaynitp
 type: challenge
 title: Introduction to rsync
+notes:
+- type: text
+  contents: |-
+    Rsync uses a sophisticated protocol to transfer only the changes necessary to make the destination match the source.
+
+    ![A simple overview of the Rsync protocol](../assets/rsync-proto-overview.png)
+- type: text
+  contents: Rsync works locally as well as over a network to transfer remote files.
 tabs:
-- id: nh6doufw1g6c
+- id: bj3c5u7otp1b
   title: Workstation
   type: terminal
   hostname: workstation
   cmd: sudo -i -u iggy
-- id: cjzhjaxbowfd
+- id: gstvxtzzhixc
   title: rsync man page
   type: browser
   hostname: rsync-docs
@@ -31,6 +39,13 @@ fileserver.
 
 If at any point you are curious, you can check out the [rsync man page](tab-1)
 tab to see the full list of `rsync` options.
+
+![An overview of the rsync protocol](../assets/rsync-proto-overview.png)
+
+If you are curious on how things work behind the scenes, check out
+[How Rsync Works: A Practical Overview](https://rsync.samba.org/how-rsync-works.html).
+
+**You don't need to know how rsync works to use it, however.**
 
 We're going to run this command. Don't worry about what the options mean for
 now, let's just get the files locally so we can work with them.
